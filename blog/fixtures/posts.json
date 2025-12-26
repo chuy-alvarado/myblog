@@ -1,0 +1,98 @@
+[
+{
+  "model": "blog.post",
+  "pk": 1,
+  "fields": {
+    "title": "My First Post",
+    "author": "Chuch Post",
+    "publish_date": "2025-12-26",
+    "last_edited": "2025-12-26",
+    "created_by": 1,
+    "featured": true
+  }
+},
+{
+  "model": "blog.post",
+  "pk": 2,
+  "fields": {
+    "title": "Getting Started with Django and UV",
+    "author": "Django Developer",
+    "publish_date": "2025-12-26",
+    "last_edited": "2025-12-26",
+    "created_by": 1,
+    "featured": true
+  }
+},
+{
+  "model": "blog.post",
+  "pk": 3,
+  "fields": {
+    "title": "Modern Python Package Management with UV",
+    "author": "Django Developer",
+    "publish_date": "2025-12-26",
+    "last_edited": "2025-12-26",
+    "created_by": 1,
+    "featured": false
+  }
+},
+{
+  "model": "blog.post",
+  "pk": 4,
+  "fields": {
+    "title": "Building REST APIs with Django REST Framework",
+    "author": "Django Developer",
+    "publish_date": "2025-12-26",
+    "last_edited": "2025-12-26",
+    "created_by": 1,
+    "featured": true
+  }
+},
+{
+  "model": "blog.post",
+  "pk": 5,
+  "fields": {
+    "title": "HTTP Client Testing with HTTPX",
+    "author": "Testing Guru",
+    "publish_date": "2025-12-26",
+    "last_edited": "2025-12-26",
+    "created_by": 1,
+    "featured": false
+  }
+},
+{
+  "model": "blog.post",
+  "pk": 6,
+  "fields": {
+    "title": "Async Python",
+    "author": "Testing Guru",
+    "publish_date": "2025-12-26",
+    "last_edited": "2025-12-26",
+    "created_by": 1,
+    "featured": true
+  }
+},
+{
+  "model": "blog.post",
+  "pk": 7,
+  "fields": {
+    "title": "Testing Django Applications",
+    "author": "QA Djangoneer",
+    "publish_date": "2025-12-26",
+    "last_edited": "2025-12-26",
+    "created_by": 1,
+    "featured": false
+  }
+},
+{
+  "model": "blog.post",
+  "pk": 8,
+  "fields": {
+    "title": "Production Django Deployment",
+    "author": "QA Djangoneer",
+    "publish_date": "2025-12-26",
+    "last_edited": "2025-12-26",
+    "created_by": 1,
+    "featured": true
+  }
+}
+]

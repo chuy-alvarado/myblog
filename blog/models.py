@@ -6,6 +6,7 @@ class Post(models.Model):
     publish_date = models.DateField(auto_created=True)
     edit_date = models.DateField(auto_now=True)
     created_by = models.ForeignKey('auth.User', on_delete=models.CASCADE)
+    featured = models.BooleanField(default=False)
 
     def __str__(self):
         return self.title

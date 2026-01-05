@@ -1,3 +1,7 @@
+# Automatically manages PR labels based on review status
+# - Adds 'awaiting-review' when PR is opened/updated or has <2 approvals
+# - Adds 'reviewed-done' when PR has 2+ approved reviews
+# - Skips updates if correct label already exists
 name: PR Review Labels
 
 on:
@@ -29,6 +33,21 @@ jobs:
 
             const approvedCount = reviews.filter(r => r.state === 'APPROVED').length;
             const newLabel = approvedCount >= 2 ? 'reviewed-done' : 'awaiting-review';
+
+            // Get current labels
+            const { data: issue } = await github.rest.issues.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber
+            });
+            
+            const currentLabels = issue.labels.map(l => l.name);
+            
+            // Skip if correct label already exists
+            if (currentLabels.includes(newLabel)) {
+              console.log(`Label '${newLabel}' already exists, skipping update`);
+              return;
+            }
 
             // Remove existing labels and add new one
             for (const label of labels) {

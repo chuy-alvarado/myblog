@@ -1,0 +1,52 @@
+name: PR Review Labels
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+  pull_request_review:
+    types: [submitted, dismissed]
+
+jobs:
+  update-labels:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+
+    steps:
+      - name: Update PR labels based on reviews
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const prNumber = context.payload.pull_request.number;
+            const labels = ['awaiting-review', 'reviewed-done'];
+
+            // Get approved reviews count
+            const { data: reviews } = await github.rest.pulls.listReviews({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: prNumber
+            });
+
+            const approvedCount = reviews.filter(r => r.state === 'APPROVED').length;
+            const newLabel = approvedCount >= 2 ? 'reviewed-done' : 'awaiting-review';
+
+            // Remove existing labels and add new one
+            for (const label of labels) {
+              try {
+                await github.rest.issues.removeLabel({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: prNumber,
+                  name: label
+                });
+              } catch {}
+            }
+
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber,
+              labels: [newLabel]
+            });
+
+            console.log(`${approvedCount} approvals → ${newLabel}`);

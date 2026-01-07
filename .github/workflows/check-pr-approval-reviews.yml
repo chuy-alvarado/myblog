@@ -1,0 +1,77 @@
+# Automatically manages PR labels based on review status
+# - Adds 'awaiting-review' when PR is opened/updated or has <2 approvals
+# - Adds 'reviewed-done' when PR has 2+ approved reviews
+# - Skips updates if correct label already exists
+name: PR Review Labels
+
+on:
+  pull_request_target:
+    types: [opened, synchronize]
+  pull_request_review:
+    types: [submitted, dismissed]
+
+jobs:
+  update-labels:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      issues: write
+
+    steps:
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
+
+      - name: Update PR labels based on reviews
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const prNumber = context.payload.pull_request.number;
+            const labels = ['awaiting-review', 'reviewed-done'];
+
+            // Get approved reviews count
+            const { data: reviews } = await github.rest.pulls.listReviews({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: prNumber
+            });
+
+            const approvedCount = reviews.filter(r => r.state === 'APPROVED').length;
+            const newLabel = approvedCount >= 2 ? 'reviewed-done' : 'awaiting-review';
+
+            // Get current labels
+            const { data: issue } = await github.rest.issues.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber
+            });
+
+            const currentLabels = issue.labels.map(l => l.name);
+
+            // Skip if correct label already exists
+            if (currentLabels.includes(newLabel)) {
+              console.log(`Label '${newLabel}' already exists, skipping update`);
+              return;
+            }
+
+            // Remove existing labels and add new one
+            for (const label of labels) {
+              try {
+                await github.rest.issues.removeLabel({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: prNumber,
+                  name: label
+                });
+              } catch {}
+            }
+
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber,
+              labels: [newLabel]
+            });
+
+            console.log(`${approvedCount} approvals → ${newLabel}`);

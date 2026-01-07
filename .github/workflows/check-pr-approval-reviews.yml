@@ -14,7 +14,9 @@ jobs:
   update-labels:
     runs-on: ubuntu-latest
     permissions:
-      pull-requests: write
+      pull-requests: read
+      issues: write
+      contents: read
 
     steps:
       - name: Dump GitHub context

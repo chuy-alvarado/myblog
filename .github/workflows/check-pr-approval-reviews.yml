@@ -5,7 +5,7 @@
 name: PR Review Labels
 
 on:
-  pull_request:
+  pull_request_target:
     types: [opened, synchronize]
   pull_request_review:
     types: [submitted, dismissed]
@@ -14,9 +14,8 @@ jobs:
   update-labels:
     runs-on: ubuntu-latest
     permissions:
-      pull-requests: read
+      pull-requests: write
       issues: write
-      contents: read
 
     steps:
       - name: Dump GitHub context
